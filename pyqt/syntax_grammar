@@ -1,0 +1,122 @@
+start1->start
+start->$
+start->function_definition start
+start->statement start
+
+#函数定义
+function_definition->function type_specifier identifier ( parameter_list ) compound_statement
+parameter_list->$
+parameter_list->type_specifier identifier parameter_list_suffix
+parameter_list_suffix->parameter_list
+parameter_list_suffix->, parameter_list_suffix
+
+#自增自减在这里处理很麻烦
+
+compound_statement->{ statement start }
+#下面这个是专门为if和else语句中可以不用花括号设置的
+#compound_statement->statement
+statement->return return_suffix ;
+return_suffix->identifier
+return_suffix->number
+return_suffix->true
+return_suffix->false
+return_suffix->$
+#写到这自己还是相当感慨的，原来LR(1)最好也别使用左公因子和左递归
+#statement->$
+
+
+#赋值语句
+statement->assignment_statement
+assignment_statement->type_specifier identifier_definition ;
+assignment_statement->identifier_definition ;
+identifier_definition->identifier identifier_suffix
+identifier_suffix->$
+identifier_suffix->assignment_oprator value_statement
+identifier_suffix_suffix->operator identifier_or_number identifier_suffix_suffix
+identifier_suffix_suffix->$
+
+#能够返回值的语句
+#1.函数返回值
+value_statement->identifier value_statement_suffix
+value_statement->number value_statement_suffix
+value_statement_suffix->operator identifier_or_number identifier_suffix_suffix
+identifier_suffix_suffix->operator identifier_or_number identifier_suffix_suffix
+value_statement_suffix->function_value value_statement_suffix_suffix
+value_statement_suffix->$
+function_value->( arugment_list )
+#arugment_list->$
+value_statement_suffix_suffix->operator identifier_or_number value_statement_suffix_suffix
+value_statement_suffix_suffix->$
+arugment_list->identifier_or_number arugment_list_suffix
+arugment_list_suffix->, identifier_or_number arugment_list_suffix
+arugment_list_suffix->$
+
+#2.普通的运算
+#value_statement->identifier_or_number identifier_suffix_suffix
+#identifier_suffix_suffix->operator identifier_or_number identifier_suffix_suffix
+#identifier_suffix_suffix->$
+
+identifier_or_number->identifier identifier_is_function
+identifier_or_number->number
+identifier_is_function->$
+identifier_is_function->( arugment_list )
+#条件语句
+statement->if ( conditional_statement ) compound_statement if_suffix
+if_suffix->else if_suffix_suffix
+if_suffix_suffix->if ( conditional_statement ) compound_statement if_suffix
+if_suffix_suffix->compound_statement
+if_suffix->$
+conditional_statement->identifier_or_number compair_operator identifier_or_number
+
+
+#循环语句
+statement->while ( conditional_statement ) compound_statement
+statement->do compound_statement while ( conditional_statement )
+statement->for ( for1 ; for2 ; for3 ) compound_statement
+for1->identifier_definition
+for1->type_specifier identifier_definition
+for2->conditional_statement
+for3->$
+for3->identifier_definition
+
+#命令语句
+statement->cout < < systemcall_cout ;
+systemcall_cout->identifier_or_number
+systemcall_cout->string
+string->" identifier_or_number string_suffix "
+string_suffix->identifier_or_number string_suffix
+string_suffix->$
+
+statement->cin > > identifier ;
+
+
+
+type_specifier->int
+type_specifier->double
+type_specifier->float
+type_specifier->char
+type_specifier->void
+#type_specifier->int *  #this may cause left recursive
+#type_specifier->double *   #same as upper
+#type_specifier->float *
+#type_specifier->char *
+#type_specifier->void *
+
+compair_operator-><
+compair_operator->>
+compair_operator-><=
+compair_operator->>=
+compair_operator->==
+
+assignment_oprator->+ =
+assignment_oprator->- =
+assignment_oprator->% =
+assignment_oprator->/ =
+assignment_oprator->* =
+assignment_oprator->=
+
+operator->+
+operator->-
+operator->*
+operator->/
+operator->%
