@@ -8,9 +8,9 @@
 
 ## 参考代码
 
+[andrewei1316/Compiler: 基于 Python 的词法和LR(1)文法分析器 (github.com)](https://github.com/andrewei1316/Compiler)
 
-
-
+[kervias/compile-lab: 编译原理实验 (github.com)](https://github.com/kervias/compile-lab)
 
 ## 环境说明
 
